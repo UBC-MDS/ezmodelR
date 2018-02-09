@@ -11,7 +11,7 @@
 This package extends the functionality of `sklearn`/`caret`, specifically with regards to model diagnostics,
 adding automation and flexibility.
 
-Specifically, the goal is to provide a functional API to automate common machine learning workflows such as splitting data,
+One goal of this package is to provide a functional API to automate common machine learning workflows such as splitting data,
 fitting and evaluating models, as well as visualizing the results to allow for easier interpretation and hyperparameter tuning.
 
 Further, this package will address specific omissions of the `sklearn` and `caret` packages and "patch up" these omissions
