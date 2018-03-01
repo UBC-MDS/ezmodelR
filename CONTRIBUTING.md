@@ -12,4 +12,4 @@ if __name__ == __main__:
   unit_test(func_args)
 ```
 
-All contributors are required to follow the [Code of Conduct](ADD LINK HERE) and any behaviour otherwise will not be tolerated.
+All contributors are required to follow the [Code of Conduct](CONDUCT.md) and any behaviour otherwise will not be tolerated.
