@@ -20,19 +20,25 @@ train_test_plot <- function(x){
 }
 
 
-regularization_plot <- function(x){
+regularization_plot <- function(model,lambda,tol=1e-7,x,y){
   # Description:
   #   Plots coefficients from regularizing various models.
   #
   # Args:
-  #   model: String specifying model that can be passed into caret's `train()` function.
-  #   alpha: Vector of penalty constant(s) multiplying the regularization term. Larger value corresponds to stronger regularization.
+  #   model: String specifying lasso, ridge regression, or logistic regression with L2-regularization.
+  #         Argument should be one of "lasso", "ridge", or "logistic".
+  #   lambda: Vector of penalty constant(s) multiplying the regularization term. Larger value corresponds to stronger regularization.
+  #   tol: Coefficients less than this will be treated as zero.
   #   x:  n x d dataframe of features.
   #   y: n x 1 dataframe of response values.
   #
   #
   # Returns:
-  #   ggplot object. If alpha has length one, then plot of magnitude of coefficients is returned, else counts of non-zero coefficients is returned.
+  #   ggplot object. Plot returned depends on length of lambda.
+  #     length(lambda)==1: Plot displays magnitude of model coefficients, where coefficients with magnitude less than
+  #                        `tol` are treated as zero.
+  #     length(lambda)>1: Plot displays counts of nonzero coefficients in each model, where coefficients with magnitude
+  #                       less than `tol` are treated as zero.
   #
   return(x)
 }
