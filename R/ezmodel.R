@@ -44,13 +44,14 @@ regularization_plot <- function(model,lambda,tol=1e-7,x,y){
 }
 
 
-score <- function(model, score_type) {
+score <- function(model, score_type, train_settings=trainControl(method='none')) {
   # Description:
   #   Used to compute an arbitrary score method on arbitrary inputs.
   #
   # Args:
-  #   model: Trained model that can be passed into caret's `train()` function.
-  #   score_type: String specifying score method to be used. Should be one of (mse, r2, adj_r2, auc, ...).
+  #   model (char): Model type that can be passed into caret's `train()` function.
+  #   score_type (char): String specifying score method to be used. Should be one of (mse, accuracy, r2, adj_r2, auc, ...).
+  #   train_settings (list): default=trainControl(method='none'). trainControl object containing any desired settings for caret's train() function.
   #
   # Returns:
   #   Function that takes dataframes X (features, n x d) and Y (response, n x 1) that score will be computed on.
