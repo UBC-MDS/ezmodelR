@@ -4,7 +4,9 @@ library(ezmodelR)
 test_that("Function returns error when wrong type of model is specified", {
   X <- mtcars[-1]
   Y <- mtcars[1]
+  
   expect_error(regularization_plot("lm",lambda=2, x=X, y=Y), "model specified must be one of 'ridge', 'lasso' or 'logistic'")
+
 })
 
 test_that("Coefficient counts being plotted are correct", {
