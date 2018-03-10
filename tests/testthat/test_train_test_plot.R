@@ -9,7 +9,8 @@ train_test_plot <- function(x){
   #               If a vector, then a vector containing several of those entries as elements
   #   X: n x d dataframe containing features
   #   Y: n x 1 dataframe containing response values.
-  #   hyperparameter: vector of hyperparameter values to iterate over.
+  #   hyperparameter: string defining hyperparameter to iterate over
+  #   param_range: vector of hyperparameter values to iterate over.
   #   random_seed: Default = None. If set to integer, defines the random train_test_split
   #
   #
@@ -21,11 +22,11 @@ train_test_plot <- function(x){
 
 #Tests:
 
+library(tidyverse)
 library(ggplot2)
 library(caret)
 library(rpart)
 library(mlbench)
-
 data(Sonar)
 
 
@@ -68,7 +69,7 @@ test_that("Passing model, score_type, and hyperparameter leads to correct plot",
     ggtitle("Train Test Plot")+
     theme_bw()
 
-  train_test_plot_instance <- test_train_plot(model = "rpart", score_type = "accuracy", X = Sonar[,1:60],
+  train_test_plot_instance <- train_test_plot(model = "rpart", score_type = "accuracy", X = Sonar[,1:60],
                                               Y = Sonar[,61], hyperparameter = "cp", random_seed= 123)
 
 
