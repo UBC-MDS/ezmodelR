@@ -1,5 +1,9 @@
 # R Script file containing function definitions for the ezmodelR package.
 
+library(ggplot2)
+library(caret)
+library(glmnet)
+library(dplyr)
 
 train_test_plot <- function(x){
   # Description:
@@ -20,7 +24,7 @@ train_test_plot <- function(x){
 }
 
 
-regularization_plot <- function(model,lambda,tol=1e-7,x,y){
+regularization_plot <- function(model, lambda, tol=1e-7, x, y){
   # Description:
   #   Plots coefficients from regularizing various models.
   #
@@ -40,7 +44,68 @@ regularization_plot <- function(model,lambda,tol=1e-7,x,y){
   #     length(lambda)>1: Plot displays counts of nonzero coefficients in each model, where coefficients with magnitude
   #                       less than `tol` are treated as zero.
   #
-  return(x)
+
+  if (!(model %in% c('ridge', 'lasso', 'logistic'))) {
+    stop("model specified must be one of 'ridge', 'lasso' or 'logistic'")
+  }
+
+  ctrl <- trainControl(method="none")
+
+  if (model == 'logistic') {
+    model_family <- "binomial"
+  } else {
+    model_family <- "gaussian"
+  }
+
+  if (model == "lasso") {
+    model_alpha <- 1
+  } else {
+    model_alpha <- 0
+  }
+
+  N <- length(lambda)
+  x$regplot_y <- y[[1]]
+
+  if (N == 1) {
+    params <- data.frame(alpha = model_alpha, lambda = lambda)
+    mod <- train(regplot_y ~ ., data=x, method='glmnet', family=model_family, trControl=ctrl, tuneGrid=params)
+    coefs <- abs(coef(mod$finalModel, mod$finalModel$lambdaOpt) %>% as.vector())
+    coefs <- sapply(coefs, function(x) ifelse(abs(x) < tol, 0, x))
+
+    df_coef <- data.frame(x=(1:length(coefs)), y=coefs)
+
+    p <- df_coef %>%
+      ggplot(aes(x=x, y=y)) +
+      geom_line(colour="gray") +
+      geom_point() +
+      theme_bw() +
+      labs(title="Magnitude of Model Coefficients", x="Magnitude", y="Coefficient")
+
+  } else if (N > 1) {
+
+    coef_mat <- matrix(ncol=2, nrow=N)
+    colnames(coef_mat) <- c("lambda", "nonzero_count")
+
+    for (i in 1:N) {
+      params <- data.frame(alpha=model_alpha, lambda=lambda[i])
+      mod <- train(regplot_y ~ ., data=x, method="glmnet", family=model_family, trControl=ctrl, tuneGrid=params)
+      coefs <- coef(mod$finalModel, mod$finalModel$lambdaOpt) %>% as.vector()
+      coef_mat[i,] <- c(lambda[i], sum(abs(coefs) >= tol))
+    }
+
+    df_coef <- as.data.frame(coef_mat)
+
+    p <- df_coef %>%
+      ggplot(aes(x=lambda, y=nonzero_count)) +
+      geom_line(colour="gray") +
+      geom_point() +
+      theme_bw() +
+      labs(title="Number of Nonzero Coefficients vs. Regularization Strength (lambda)", x="lambda", y="Number of Nonzero Coefficients") +
+      scale_x_continuous(breaks=df_coef$lambda, labels=df_coef$lambda)
+  }
+
+  return(p)
+
 }
 
 
