@@ -1,0 +1,41 @@
+---
+title: "Introduction to ezmodelR"
+author: "Tyler Roberts, Alex Kleefeldt, Sean Conley"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to ezmodelR}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Overview
+
+The `ezmodelR` package provides a collection of functions that make it easier to extract information from various models for the purpose of comparing them. The package is meant to be used in conjunction with the `caret` package and offers new scoring methods, the ability to view the results of regularization, and the ability to quickly and easily compare training and test error of a model while varying a parameter.
+
+### Plotting Regularization Results
+
+The `regularization_plot` function allows the user to view a plot comparing coefficient magnitude and regularization strength for:
+
+- L2-regularized regression (specified by `model='ridge'`)
+- L1-regularized regression (specified by `model='lasso'`)
+- L2-regularized logistic regression with a binary outcome (specified by `model='logistic'`)
+
+The function takes arguments specifying the type of model, the regularization strength `lambda` (which can be a vector of different values), a **dataframe** `x` for the features, and a **dataframe** `y` for the response. An optional tolerance argument `tol` can be specified.
+
+There are two main types of plots that can be created. If `lambda` is a vector of length 1, then the plot will display the magnitude of the coefficients of the model. 
+
+```
+regularization_plot('lasso', lambda=2, x=X, y=Y)
+```
+
+
+If `lambda` has a length larger than 1, then the plot will display the number of nonzero coefficients of the models produces vs. the regularization strength.
+
+```
+regularization_plot('ridge', 'lambda=2^c(-1,0,1), x=X, y=y)
+```
+
+The optional tolerance argument can be useful if you want to treat all coefficients with a magnitude smaller than some number as 0. By default, `tol=1e-7`, so any coefficient with a magnitude less than that will be treated as 0 for plotting purposed.
+
+The function will return a `ggplot2` plot of the object, which is convenient as the data plotted (e.g. coefficient values) can then be extracted from it.
