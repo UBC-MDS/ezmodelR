@@ -45,18 +45,21 @@ regularization_plot <- function(model, lambda, tol=1e-7, x, y){
   #                       less than `tol` are treated as zero.
   #
 
+  #True, A, False: B
   if (!(model %in% c('ridge', 'lasso', 'logistic'))) {
     stop("model specified must be one of 'ridge', 'lasso' or 'logistic'")
   }
 
   ctrl <- trainControl(method="none")
 
+  # True: C, False: D
   if (model == 'logistic') {
     model_family <- "binomial"
   } else {
     model_family <- "gaussian"
   }
 
+  #True: E, False: F
   if (model == "lasso") {
     model_alpha <- 1
   } else {
@@ -66,6 +69,7 @@ regularization_plot <- function(model, lambda, tol=1e-7, x, y){
   N <- length(lambda)
   x$regplot_y <- y[[1]]
 
+  #True: G, False: H
   if (N == 1) {
     params <- data.frame(alpha = model_alpha, lambda = lambda)
     mod <- train(regplot_y ~ ., data=x, method='glmnet', family=model_family, trControl=ctrl, tuneGrid=params)
