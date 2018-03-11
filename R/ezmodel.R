@@ -226,10 +226,10 @@ score <- function(model, score_type, train_settings=trainControl(method='none'))
   supported <- c(mse, accuracy, r2, adj_r2, sensitivity, specificity)
   names(supported) <- c('mse', 'accuracy', 'r2','adj_r2','sensitivity','specificity')
 
-  if(score_type %in% names(supported)){
+  if(score_type %in% names(supported)){ # A
     return(supported[[score_type]])
   }
-  else{
+  else{ # B
     stop(print(glue("{score_type} is not currently supported.")))
   }
 }
