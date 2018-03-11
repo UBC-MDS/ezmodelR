@@ -116,11 +116,35 @@ score <- function(model, score_type, train_settings=trainControl(method='none'))
   # Args:
   #   model (char): Model type that can be passed into caret's `train()` function.
   #   score_type (char): String specifying score method to be used. Should be one of (mse, accuracy, r2, adj_r2, auc, ...).
-  #   train_settings (list): default=trainControl(method='none'). trainControl object containing any desired settings for caret's train() function.
+  #   train_settings (list): default=trainControl(method='none'). trainControl object containing any desired settings for caret's                                    train() function.
   #
   # Returns:
   #   Function that takes dataframes X (features, n x d) and Y (response, n x 1) that score will be computed on.
 
-  return(NULL)
-}
 
+  mse <- function(x,y){
+    model <- train(x, as.factor(y), method=model, trControl=train_settings)
+    # Note the as.numeric(as.factor()) magic, Currently only suports Classification
+
+    y_pred <- predict(model)
+
+    score <- sum(((as.numeric(y_pred) - as.numeric(as.factor(y))^2)))
+    return (score)
+  }
+
+  accuracy <- function(x, y){
+    model <- train(x, as.factor(y), method=model, trControl=train_settings)
+    y_pred <- predict(model)
+
+    score <- mean(as.numeric(y_pred) == as.numeric(as.factor(y)))
+    return(score)
+  }
+
+  specificity <- function(x,y){
+
+  }
+
+  supported <- c(mse, accuracy)
+  names(supported) <- c('mse', 'accuracy')
+  return(supported[[score_type]])
+}
