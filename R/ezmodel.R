@@ -28,6 +28,7 @@ train_test_plot <- function(model, score_type, x, y, hyperparameter, param_range
   #   ggplot object showing training and test score vs. hyperparameter values.
 
   #Condition
+
   #True: A, False: B
   if(class(random_seed) == "numeric"){
     set.seed(random_seed)
@@ -49,13 +50,18 @@ train_test_plot <- function(model, score_type, x, y, hyperparameter, param_range
 
   #Condition: C
   if (!(model == "decision_tree")){
-    stop("'lasso', 'ridge', and 'logistic' regression are not implemented yet. Please, choose model = 'decision tree'")
+    stop("'lasso', 'ridge', and 'logistic' regression are not implemented yet. Please, choose model = 'decision_tree'")
   }
 
   #Condition: D
   if (model == "decision_tree"){
 
-    #Condition: E
+    #Condition E
+    if(!(score_type == "accuracy")){
+      stop("score_type for decision_tree needs to be 'accuracy'")
+    }
+
+    #Condition: F
     if(!(hyperparameter == "cp")){
       stop("The hyperparameter for a decision_tree has to be 'cp'")
     }
@@ -80,7 +86,18 @@ train_test_plot <- function(model, score_type, x, y, hyperparameter, param_range
       index_list <- c(index_list,i)
     }
   }
+
+  results <- data.frame(cp = index_list, training_accuracy = train_acc_list, testing_accuracy = test_acc_list)
+
+  train_test_plot <- ggplot(results)+
+    geom_line(aes(x = cp, y = training_accuracy), color = "darkred", size = 1, alpha = 0.5)+
+    geom_line(aes(x = cp, y = testing_accuracy), color = "darkblue", size = 1, alpha = 0.5)+
+    ggtitle("Train Test Plot")+
+    theme_bw()
+
+  return(train_test_plot)
 }
+
 
 
 regularization_plot <- function(model, lambda, tol=1e-7, x, y){
