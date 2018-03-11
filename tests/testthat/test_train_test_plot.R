@@ -1,34 +1,15 @@
-train_test_plot <- function(x){
-  # Description:
-  #   Creates plot of training and test error for trained model.
-  #
-  # Args:
-  #   model: String specifying model to evaluate. May be restricted to certain model-types in the process
-  #          project
-  #   score_type: (list or str): Should be one of (mse, r2, adj_r2, auc, accuracy ...).
-  #               If a vector, then a vector containing several of those entries as elements
-  #   X: n x d dataframe containing features
-  #   Y: n x 1 dataframe containing response values.
-  #   hyperparameter: vector of hyperparameter values to iterate over.
-  #   random_seed: Default = None. If set to integer, defines the random train_test_split
-  #
-  #
-  # Returns:
-  #   ggplot object showing training and test score vs. hyperparameter values.
-  #
-  return(x)
-}
+library(ezmodelR)
 
-#Tests:
 
 library(ggplot2)
 library(caret)
 library(rpart)
 library(mlbench)
-
 data(Sonar)
 
+#Tests:
 
+#Test A
 test_that("Passing model, score_type, and hyperparameter leads to correct plot",{
 
   set.seed(123)
@@ -68,8 +49,8 @@ test_that("Passing model, score_type, and hyperparameter leads to correct plot",
     ggtitle("Train Test Plot")+
     theme_bw()
 
-  train_test_plot_instance <- test_train_plot(model = "rpart", score_type = "accuracy", X = Sonar[,1:60],
-                                              Y = Sonar[,61], hyperparameter = "cp", random_seed= 123)
+  train_test_plot_instance <- train_test_plot(model = "decision_tree", score_type = "accuracy", x = Sonar[,1:60],
+                                              y = Sonar[,61], hyperparameter = "cp",param_range = seq(0,1,.05), random_seed= 123)
 
 
   expect_identical(compare_plot$data, train_test_plot_instance$data)
@@ -77,31 +58,32 @@ test_that("Passing model, score_type, and hyperparameter leads to correct plot",
 })
 
 
+#Test B
 
-
-test_that("Function returns error when no/unexpected model is specified" {
-  X <- mtcars[-1]
-  Y <- mtcars[1]
-  expect_warning(test_train_plot(model = NA , score_type = "accuracy", X = Sonar[,1:60],
-                                 Y = Sonar[,61], hyperparameter = "cp", random_seed= 123), "specified model is not valid")
+test_that("random_seed is numeric" {
+  expect_warning(test_train_plot(model = "decision_tree" , score_type = "accuracy", x = Sonar[,1:60],
+                                 y = Sonar[,61], hyperparameter = "cp",param_range = seq(0,1,.05), random_seed= NA), "random_seed needs to be numeric.")
 })
 
 
-
-test_that("Function returns error when no/unexpected score is specified" {
-  X <- mtcars[-1]
-  Y <- mtcars[1]
-  expect_warning(test_train_plot(model = "rpart" , score_type = NA, X = Sonar[,1:60],
-                                 Y = Sonar[,61], hyperparameter = "cp", random_seed= 123), "specified score is not valid")
+#Test C
+test_that("Function returns error when unexpected model is specified" {
+  expect_warning(test_train_plot(model = "ridge" , score_type = "accuracy", x = Sonar[,1:60],
+                                 y = Sonar[,61], hyperparameter = "cp", random_seed= 123), "'lasso', 'ridge', and 'logistic' regression are not implemented yet. Please, choose model = 'decision tree'")
 })
 
 
+#Test D
+test_that("Function returns error when unexpected score is specified" {
+  expect_warning(test_train_plot(model = "decision_tree" , score_type = NA, x = Sonar[,1:60],
+                                 y = Sonar[,61], hyperparameter = "cp",param_range = seq(0,1,.05), random_seed= 123), "score_type for decision_tree needs to be 'accuracy'")
+})
 
-test_that("Function returns error when no/unexpected hyperparameter is specified" {
-  X <- mtcars[-1]
-  Y <- mtcars[1]
-  expect_warning(test_train_plot(model = "rpart" , score_type = "accuracy", X = Sonar[,1:60],
-                                 Y = Sonar[,61], hyperparameter = NA , random_seed= 123), "specified score is not valid")
+
+#Test E
+test_that("Function returns error when unexpected hyperparameter is specified" {
+  expect_warning(test_train_plot(model = "decision_tree" , score_type = "accuracy", x = Sonar[,1:60],
+                                 y = Sonar[,61], hyperparameter = NA,param_range = seq(0,1,.05), random_seed= 123), "The hyperparameter for a decision_tree has to be 'cp'")
 })
 
 

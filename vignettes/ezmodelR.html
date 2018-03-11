@@ -12,7 +12,7 @@
 
 <meta name="author" content="Tyler Roberts, Alex Kleefeldt, Sean Conley" />
 
-<meta name="date" content="2018-03-10" />
+<meta name="date" content="2018-03-11" />
 
 <title>Introduction to ezmodelR</title>
 
@@ -32,7 +32,7 @@
 
 <h1 class="title toc-ignore">Introduction to ezmodelR</h1>
 <h4 class="author"><em>Tyler Roberts, Alex Kleefeldt, Sean Conley</em></h4>
-<h4 class="date"><em>2018-03-10</em></h4>
+<h4 class="date"><em>2018-03-11</em></h4>
 
 
 
@@ -53,6 +53,23 @@
 <p>If <code>lambda</code> has a length larger than 1, then the plot will display the number of nonzero coefficients of the models produces vs. the regularization strength.</p>
 <pre><code>regularization_plot('ridge', 'lambda=2^c(-1,0,1), x=X, y=y)</code></pre>
 <p>The optional tolerance argument can be useful if you want to treat all coefficients with a magnitude smaller than some number as 0. By default, <code>tol=1e-7</code>, so any coefficient with a magnitude less than that will be treated as 0 for plotting purposed.</p>
+<p>The function will return a <code>ggplot2</code> plot of the object, which is convenient as the data plotted (e.g. coefficient values) can then be extracted from it.</p>
+</div>
+<div id="plotting-training-and-test-errors" class="section level3">
+<h3>Plotting Training and Test Errors</h3>
+<p>The <code>train_test_plot</code> function allows the user to view a plot comparing training and test error while iterating across a specified hyperparameter for the following models:</p>
+<ul>
+<li>decision tree (specified by <code>model='decision_tree'</code>)</li>
+<li>L2-regularized regression (specified by <code>model='ridge'</code>)</li>
+<li>L1-regularized regression (specified by <code>model='lasso'</code>)</li>
+<li>L2-regularized logistic regression with a binary outcome (specified by <code>model='logistic'</code>)</li>
+</ul>
+<p><strong>Note:</strong> ‘ridge’, ‘lasso’, and ‘logistic’ regression are not yet implemented.</p>
+<p>The function takes arguments specifying the type of model, the type of score plotted <code>score_type</code>, dataframe containing features <code>x</code>, a dataframe containing the response variable <code>y</code> , The <code>hyperparameter</code> to iterate over, the parameter range that defines the iteration <code>param_range</code>, as well as a random seed that standardizes the split of training and test data <code>random_seed</code>.</p>
+<p>The function will return a plot showing training and test error across the defined range of the hyperparameter. Depending on the output the user can get an idea which value of the hyperparameter lead to under or overfitting and adjust the model accoringly.</p>
+<p>Here’s an example of the syntax to call the function for a decision tree model:</p>
+<pre><code>train_test_plot(model = &quot;decision_tree&quot;, score_type = &quot;accuracy&quot;, x = Y,
+                                              y = Y, hyperparameter = &quot;cp&quot;, param_range = range(...), random_seed= ...)</code></pre>
 <p>The function will return a <code>ggplot2</code> plot of the object, which is convenient as the data plotted (e.g. coefficient values) can then be extracted from it.</p>
 </div>
 </div>
