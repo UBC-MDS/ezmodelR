@@ -28,6 +28,17 @@ user to choose different scoring functions based on the problem at hand.
 
 3. `regularization_plot()`  Visualize the results of L1 or L2 regularization on your linear models to help determine the optimal strength of your regularization parameter.
 
+# Usage
+
+See the vignette [here](https://github.com/UBC-MDS/ezmodelR/blob/master/vignettes/ezmodelR.Rmd) for a basic outline of usage.
+
+# Installation
+
+Installation is straightforward:
+
+```
+devtools::install_github("UBC-MDS/ezmodelR")
+```
 
 # Description of Landscape
 
