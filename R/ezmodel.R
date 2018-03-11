@@ -123,9 +123,8 @@ score <- function(model, score_type, train_settings=trainControl(method='none'))
 
 
   mse <- function(x,y){
-    model <- train(x, as.factor(y), method=model, trControl=train_settings)
-    # Note the as.numeric(as.factor()) magic, Currently only suports Classification
-
+    model <- train(x, as.factor(y), method=model, trControl=train_settings
+    ) # Note the as.numeric(as.factor()) magic, Currently only suports Classification
     y_pred <- predict(model)
 
     score <- sum(((as.numeric(y_pred) - as.numeric(as.factor(y))^2)))
@@ -141,10 +140,67 @@ score <- function(model, score_type, train_settings=trainControl(method='none'))
   }
 
   specificity <- function(x,y){
+    model <- train(x, as.factor(y), method=model, trControl=train_settings)
+    y_pred <- predict(model)
 
+
+    trueneg <- function(y_true, y_pred){
+      num_tn <- 0
+      for(i in 1:length(y_true)){
+        if(all(c(y_true[i] == 0, y_pred[i] == 0))) {
+          num_tn <- num_tn + 1
+        }
+      }
+      return(num_tn)
+    }
+
+    falsepos <- function(y_true, y_pred){
+      num_fp <- 0
+      for(i in 1:length(y_true)){
+        if(all(c(y_true[i] == 0, y_pred[i] == 1))) {
+          num_fp <- num_fp + 1
+        }
+      }
+      return(num_fp)
+    }
+
+    score <- trueneg(y, y_pred)/(trueneg(y, y_pred) + falsepos(y, y_pred))
+
+    return(score)
   }
 
-  supported <- c(mse, accuracy)
-  names(supported) <- c('mse', 'accuracy')
+  sensitivity <- function(x,y){
+
+    model <- train(x, as.factor(y), method=model, trControl=train_settings)
+    y_pred <- predict(model)
+
+
+    truepos <- function(y_true, y_pred){
+      num_tp <- 0
+      for(i in 1:length(y_true)){
+        if(all(c(y_true[i] == 1, y_pred[i] == 1))) {
+          num_tp <- num_tp + 1
+        }
+      }
+      return(num_tp)
+    }
+
+    falseneg <- function(y_true, y_pred){
+      num_fn <- 0
+      for(i in 1:length(y_true)){
+        if(all(c(y_true[i] == 1, y_pred[i] == 0))) {
+          num_fn <- num_fn + 1
+        }
+      }
+      return(num_fn)
+    }
+
+    score <- truepos(y, y_pred)/(truepos(y, y_pred) + falseneg(y, y_pred))
+
+    return(score)
+  }
+
+  supported <- c(mse, accuracy, sensitivity, specificity)
+  names(supported) <- c('mse', 'accuracy', 'sensitivity','specificity')
   return(supported[[score_type]])
 }
