@@ -14,12 +14,14 @@ train_test_plot <- function(model, score_type, x, y, hyperparameter, param_range
   #   Creates plot of training and test error for trained model.
   #
   # Args:
-  #   model: String specifying decision_tree, lasso, ridge regression, or logistic regression.
+  #   model:Currenntly only works with argument 'decision_tree'.
+  #         Generally:
+  #         String specifying decision_tree, lasso, ridge regression, or logistic regression.
   #         Argument should be one of "decision_tree", "lasso", "ridge", or "logistic"..
   #   score_type: (list or str): Should be one of (mse, r2, adj_r2, auc, ...).
   #               If a vector, then a vector containing several of those entries as elements
-  #   X: n x d dataframe containing features
-  #   Y: n x 1 dataframe containing response values.
+  #   x: n x d dataframe containing features
+  #   y: n x 1 dataframe containing response values.
   #   hyperparameter: string defining hyperparameter to iterate over
   #   param_range: vector of hyperparameter values to iterate over
   #   random_seed: Default = None. If set to integer, defines the random train_test_split
