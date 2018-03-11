@@ -4,6 +4,7 @@ library(ggplot2)
 library(caret)
 library(glmnet)
 library(dplyr)
+library(glue)
 library(rpart)
 library(mlbench)
 data(Sonar)
@@ -198,11 +199,119 @@ score <- function(model, score_type, train_settings=trainControl(method='none'))
   # Args:
   #   model (char): Model type that can be passed into caret's `train()` function.
   #   score_type (char): String specifying score method to be used. Should be one of (mse, accuracy, r2, adj_r2, auc, ...).
-  #   train_settings (list): default=trainControl(method='none'). trainControl object containing any desired settings for caret's train() function.
+  #   train_settings (list): default=trainControl(method='none'). trainControl object containing any desired settings for caret's                                    train() function.
   #
   # Returns:
   #   Function that takes dataframes X (features, n x d) and Y (response, n x 1) that score will be computed on.
 
-  return(NULL)
-}
 
+  mse <- function(x,y){
+    model <- train(x, as.factor(y), method=model, trControl=train_settings
+    ) # Note the as.numeric(as.factor()) magic, Currently only suports Classification
+    y_pred <- predict(model)
+
+    score <- sum(((as.numeric(y_pred) - as.numeric(as.factor(y))^2)))
+    return (score)
+  }
+
+  accuracy <- function(x, y){
+    model <- train(x, as.factor(y), method=model, trControl=train_settings)
+    y_pred <- predict(model)
+
+    score <- mean(as.numeric(y_pred) == as.numeric(as.factor(y)))
+    return(score)
+  }
+
+  specificity <- function(x,y){
+    model <- train(x, as.factor(y), method=model, trControl=train_settings)
+    y_pred <- predict(model)
+
+
+    trueneg <- function(y_true, y_pred){
+      num_tn <- 0
+      for(i in 1:length(y_true)){
+        if(all(c(y_true[i] == 0, y_pred[i] == 0))) {
+          num_tn <- num_tn + 1
+        }
+      }
+      return(num_tn)
+    }
+
+    falsepos <- function(y_true, y_pred){
+      num_fp <- 0
+      for(i in 1:length(y_true)){
+        if(all(c(y_true[i] == 0, y_pred[i] == 1))) {
+          num_fp <- num_fp + 1
+        }
+      }
+      return(num_fp)
+    }
+
+    score <- trueneg(y, y_pred)/(trueneg(y, y_pred) + falsepos(y, y_pred))
+
+    return(score)
+  }
+
+  sensitivity <- function(x,y){
+
+    model <- train(x, as.factor(y), method=model, trControl=train_settings)
+    y_pred <- predict(model)
+
+
+    truepos <- function(y_true, y_pred){
+      num_tp <- 0
+      for(i in 1:length(y_true)){
+        if(all(c(y_true[i] == 1, y_pred[i] == 1))) {
+          num_tp <- num_tp + 1
+        }
+      }
+      return(num_tp)
+    }
+
+    falseneg <- function(y_true, y_pred){
+      num_fn <- 0
+      for(i in 1:length(y_true)){
+        if(all(c(y_true[i] == 1, y_pred[i] == 0))) {
+          num_fn <- num_fn + 1
+        }
+      }
+      return(num_fn)
+    }
+
+    score <- truepos(y, y_pred)/(truepos(y, y_pred) + falseneg(y, y_pred))
+
+    return(score)
+  }
+
+  r2 <- function(x, y){
+    model <- train(x, as.factor(y), method=model, trControl=train_settings)
+    y_pred <- predict(model)
+
+    score <- 1 - ((sum((as.numeric(as.factor(y)) - as.numeric(as.factor(y_pred)))**2))/(sum((y - mean(y))**2)))
+    return(score)
+  }
+
+  adj_r2 <- function(x, y){
+
+    # Something not working here. Unsure what.
+
+    n <- dim(x)[1]
+    p <- dim(x)[2]
+
+    model <- train(x, as.factor(y), method=model, trControl=train_settings)
+    y_pred <- predict(model)
+
+    score <- 1 - (1 - (r2(y, y_pred)*((n - 1)/(n - p - 1))))
+    return(score)
+  }
+
+  supported <- c(mse, accuracy, r2, adj_r2, sensitivity, specificity)
+  names(supported) <- c('mse', 'accuracy', 'r2','adj_r2','sensitivity','specificity')
+
+  if(score_type %in% names(supported)){ # A
+    return(supported[[score_type]])
+  }
+  else{ # B
+    stop(print(glue("{score_type} is not currently supported.")))
+  }
+}

@@ -1,4 +1,7 @@
-.Rproj.user
+notes/
+
+.gitignore
+
 .Rhistory
-.RData
-inst/doc
+
+.Rproj.user
