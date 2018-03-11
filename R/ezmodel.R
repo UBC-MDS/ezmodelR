@@ -4,6 +4,7 @@ library(ggplot2)
 library(caret)
 library(glmnet)
 library(dplyr)
+library(glue)
 
 train_test_plot <- function(x){
   # Description:
@@ -200,7 +201,35 @@ score <- function(model, score_type, train_settings=trainControl(method='none'))
     return(score)
   }
 
-  supported <- c(mse, accuracy, sensitivity, specificity)
-  names(supported) <- c('mse', 'accuracy', 'sensitivity','specificity')
-  return(supported[[score_type]])
+  r2 <- function(x, y){
+    model <- train(x, as.factor(y), method=model, trControl=train_settings)
+    y_pred <- predict(model)
+
+    score <- 1 - ((sum((as.numeric(as.factor(y)) - as.numeric(as.factor(y_pred)))**2))/(sum((y - mean(y))**2)))
+    return(score)
+  }
+
+  adj_r2 <- function(x, y){
+
+    # Something not working here. Unsure what.
+
+    n <- dim(x)[1]
+    p <- dim(x)[2]
+
+    model <- train(x, as.factor(y), method=model, trControl=train_settings)
+    y_pred <- predict(model)
+
+    score <- 1 - (1 - (r2(y, y_pred)*((n - 1)/(n - p - 1))))
+    return(score)
+  }
+
+  supported <- c(mse, accuracy, r2, adj_r2, sensitivity, specificity)
+  names(supported) <- c('mse', 'accuracy', 'r2','adj_r2','sensitivity','specificity')
+
+  if(score_type %in% names(supported)){
+    return(supported[[score_type]])
+  }
+  else{
+    stop(print(glue("{score_type} is not currently supported.")))
+  }
 }
