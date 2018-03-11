@@ -39,3 +39,32 @@ regularization_plot('ridge', 'lambda=2^c(-1,0,1), x=X, y=y)
 The optional tolerance argument can be useful if you want to treat all coefficients with a magnitude smaller than some number as 0. By default, `tol=1e-7`, so any coefficient with a magnitude less than that will be treated as 0 for plotting purposed.
 
 The function will return a `ggplot2` plot of the object, which is convenient as the data plotted (e.g. coefficient values) can then be extracted from it.
+
+
+
+### Plotting Training and Test Errors 
+
+The `train_test_plot` function allows the user to view a plot comparing training and test error while iterating across a specified hyperparameter for the following models:
+
+- decision tree (specified by `model='decision_tree'`)
+- L2-regularized regression (specified by `model='ridge'`)
+- L1-regularized regression (specified by `model='lasso'`)
+- L2-regularized logistic regression with a binary outcome (specified by `model='logistic'`)   
+
+
+
+**Note:** 'ridge', 'lasso', and 'logistic' regression are not yet implemented. 
+
+
+The function takes arguments specifying the type of model, the type of score plotted `score_type`, dataframe containing features `x`, a dataframe containing the response variable `y` , The `hyperparameter` to iterate over, the parameter range that defines the iteration `param_range`, as well as a random seed that standardizes the split of training and test data `random_seed`.
+
+The function will return a plot showing training and test error across the defined range of the hyperparameter. Depending on the output the user can get an idea which value of the hyperparameter lead to under or overfitting and adjust the model accoringly. 
+
+Here's an example of the syntax to call the function for a decision tree model:
+
+```
+train_test_plot(model = "decision_tree", score_type = "accuracy", x = Y,
+                                              y = Y, hyperparameter = "cp", param_range = range(...), random_seed= ...)
+```
+
+The function will return a `ggplot2` plot of the object, which is convenient as the data plotted (e.g. coefficient values) can then be extracted from it.
