@@ -4,24 +4,103 @@ library(ggplot2)
 library(caret)
 library(glmnet)
 library(dplyr)
+library(glue)
+library(rpart)
+library(mlbench)
+data(Sonar)
 
-train_test_plot <- function(x){
+train_test_plot <- function(model, score_type, x, y, hyperparameter, param_range, random_seed){
+
   # Description:
   #   Creates plot of training and test error for trained model.
   #
   # Args:
-  #   model: Trained model that can be passed into caret's `predict` function.
+  #   model:Currenntly only works with argument 'decision_tree'.
+  #         Generally:
+  #         String specifying decision_tree, lasso, ridge regression, or logistic regression.
+  #         Argument should be one of "decision_tree", "lasso", "ridge", or "logistic"..
   #   score_type: (list or str): Should be one of (mse, r2, adj_r2, auc, ...).
   #               If a vector, then a vector containing several of those entries as elements
-  #   X: n x d dataframe containing features
-  #   Y: n x 1 dataframe containing response values.
-  #   hyperparameter: vector of hyperparameter values to iterate over.
+  #   x: n x d dataframe containing features
+  #   y: n x 1 dataframe containing response values.
+  #   hyperparameter: string defining hyperparameter to iterate over
+  #   param_range: vector of hyperparameter values to iterate over
+  #   random_seed: Default = None. If set to integer, defines the random train_test_split
   #
   # Returns:
   #   ggplot object showing training and test score vs. hyperparameter values.
-  #
-  return(x)
+
+  #Condition
+
+  #True: A, False: B
+  if(class(random_seed) == "numeric"){
+    set.seed(random_seed)
+  } else {
+    stop("random_seed needs to be numeric.")
+  }
+
+
+  dat <- cbind(x,y)
+
+  inTraining <- createDataPartition(dat$y, p = .75, list = FALSE)
+  training <- dat[ inTraining,]
+  testing  <- dat[-inTraining,]
+  ctrl <- trainControl(method="none")
+
+  train_acc_list <- c()
+  test_acc_list <- c()
+  index_list <- c()
+
+  #Condition: C
+  if (!(model == "decision_tree")){
+    stop("'lasso', 'ridge', and 'logistic' regression are not implemented yet. Please, choose model = 'decision_tree'")
+  }
+
+  #Condition: D
+  if (model == "decision_tree"){
+
+    #Condition E
+    if(!(score_type == "accuracy")){
+      stop("score_type for decision_tree needs to be 'accuracy'")
+    }
+
+    #Condition: F
+    if(!(hyperparameter == "cp")){
+      stop("The hyperparameter for a decision_tree has to be 'cp'")
+    }
+
+    for (i in param_range){
+      cp = hyperparameter
+      params <- data.frame(cp=i)
+      train_model <- train(y ~ ., data = training, method = 'rpart', trControl = ctrl, tuneGrid = params)
+
+      train_pred <- predict(train_model, training, type = "raw")
+      true_train <- training$y
+      #call accuracy from Tyler
+      train_acc <- sum(train_pred == true_train)/length(training$y)
+
+      test_pred <- predict(train_model, testing, type = "raw")
+      true_test <- testing$y
+      #call accuracy from Tyler
+      test_acc <- sum(test_pred == true_test)/length(testing$y)
+
+      train_acc_list <- c(train_acc_list, train_acc)
+      test_acc_list <- c(test_acc_list, test_acc)
+      index_list <- c(index_list,i)
+    }
+  }
+
+  results <- data.frame(cp = index_list, training_accuracy = train_acc_list, testing_accuracy = test_acc_list)
+
+  train_test_plot <- ggplot(results)+
+    geom_line(aes(x = cp, y = training_accuracy), color = "darkred", size = 1, alpha = 0.5)+
+    geom_line(aes(x = cp, y = testing_accuracy), color = "darkblue", size = 1, alpha = 0.5)+
+    ggtitle("Train Test Plot")+
+    theme_bw()
+
+  return(train_test_plot)
 }
+
 
 
 regularization_plot <- function(model, lambda, tol=1e-7, x, y){
@@ -120,11 +199,119 @@ score <- function(model, score_type, train_settings=trainControl(method='none'))
   # Args:
   #   model (char): Model type that can be passed into caret's `train()` function.
   #   score_type (char): String specifying score method to be used. Should be one of (mse, accuracy, r2, adj_r2, auc, ...).
-  #   train_settings (list): default=trainControl(method='none'). trainControl object containing any desired settings for caret's train() function.
+  #   train_settings (list): default=trainControl(method='none'). trainControl object containing any desired settings for caret's                                    train() function.
   #
   # Returns:
   #   Function that takes dataframes X (features, n x d) and Y (response, n x 1) that score will be computed on.
 
-  return(NULL)
-}
 
+  mse <- function(x,y){
+    model <- train(x, as.factor(y), method=model, trControl=train_settings
+    ) # Note the as.numeric(as.factor()) magic, Currently only suports Classification
+    y_pred <- predict(model)
+
+    score <- sum(((as.numeric(y_pred) - as.numeric(as.factor(y))^2)))
+    return (score)
+  }
+
+  accuracy <- function(x, y){
+    model <- train(x, as.factor(y), method=model, trControl=train_settings)
+    y_pred <- predict(model)
+
+    score <- mean(as.numeric(y_pred) == as.numeric(as.factor(y)))
+    return(score)
+  }
+
+  specificity <- function(x,y){
+    model <- train(x, as.factor(y), method=model, trControl=train_settings)
+    y_pred <- predict(model)
+
+
+    trueneg <- function(y_true, y_pred){
+      num_tn <- 0
+      for(i in 1:length(y_true)){
+        if(all(c(y_true[i] == 0, y_pred[i] == 0))) {
+          num_tn <- num_tn + 1
+        }
+      }
+      return(num_tn)
+    }
+
+    falsepos <- function(y_true, y_pred){
+      num_fp <- 0
+      for(i in 1:length(y_true)){
+        if(all(c(y_true[i] == 0, y_pred[i] == 1))) {
+          num_fp <- num_fp + 1
+        }
+      }
+      return(num_fp)
+    }
+
+    score <- trueneg(y, y_pred)/(trueneg(y, y_pred) + falsepos(y, y_pred))
+
+    return(score)
+  }
+
+  sensitivity <- function(x,y){
+
+    model <- train(x, as.factor(y), method=model, trControl=train_settings)
+    y_pred <- predict(model)
+
+
+    truepos <- function(y_true, y_pred){
+      num_tp <- 0
+      for(i in 1:length(y_true)){
+        if(all(c(y_true[i] == 1, y_pred[i] == 1))) {
+          num_tp <- num_tp + 1
+        }
+      }
+      return(num_tp)
+    }
+
+    falseneg <- function(y_true, y_pred){
+      num_fn <- 0
+      for(i in 1:length(y_true)){
+        if(all(c(y_true[i] == 1, y_pred[i] == 0))) {
+          num_fn <- num_fn + 1
+        }
+      }
+      return(num_fn)
+    }
+
+    score <- truepos(y, y_pred)/(truepos(y, y_pred) + falseneg(y, y_pred))
+
+    return(score)
+  }
+
+  r2 <- function(x, y){
+    model <- train(x, as.factor(y), method=model, trControl=train_settings)
+    y_pred <- predict(model)
+
+    score <- 1 - ((sum((as.numeric(as.factor(y)) - as.numeric(as.factor(y_pred)))**2))/(sum((y - mean(y))**2)))
+    return(score)
+  }
+
+  adj_r2 <- function(x, y){
+
+    # Something not working here. Unsure what.
+
+    n <- dim(x)[1]
+    p <- dim(x)[2]
+
+    model <- train(x, as.factor(y), method=model, trControl=train_settings)
+    y_pred <- predict(model)
+
+    score <- 1 - (1 - (r2(y, y_pred)*((n - 1)/(n - p - 1))))
+    return(score)
+  }
+
+  supported <- c(mse, accuracy, r2, adj_r2, sensitivity, specificity)
+  names(supported) <- c('mse', 'accuracy', 'r2','adj_r2','sensitivity','specificity')
+
+  if(score_type %in% names(supported)){ # A
+    return(supported[[score_type]])
+  }
+  else{ # B
+    stop(print(glue("{score_type} is not currently supported.")))
+  }
+}

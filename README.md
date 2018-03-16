@@ -22,12 +22,23 @@ user to choose different scoring functions based on the problem at hand.
 
 # List of Functions
 
-1. Visualizations to aid model/feature selection.
+1. `train_test_plot()`: Simply and easily visualize the training and validation error of your model, allowing you to spend more time protoyping and less time writing boilerplate code.
 
-2. Additional scoring functions for use with `sklearn`/`caret` models (i.e. MSE ...)
+2. `score()`: Scoring class to allow a user more control over the scores used to validate their model's performance. Currently includes: accuracy, mse, specificity, sensitivity, $R^2$, and adjusted $R^2$.
 
-3. Transformers to coerce common data types into the requisite data types to be passed to existing model objects.
+3. `regularization_plot()`  Visualize the results of L1 or L2 regularization on your linear models to help determine the optimal strength of your regularization parameter.
 
+# Usage
+
+See the vignette [here](https://github.com/UBC-MDS/ezmodelR/blob/master/vignettes/ezmodelR.Rmd) for a basic outline of usage.
+
+# Installation
+
+Installation is straightforward:
+
+```
+devtools::install_github("UBC-MDS/ezmodelR")
+```
 
 # Description of Landscape
 

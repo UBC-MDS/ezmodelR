@@ -10,7 +10,7 @@ test_that("score() returns an error if a supported model type is not passed"{
 })
 
 test_that("score() returns an error if a supported score type is not passed"{
-  expect_warning(score("rf",'goodbye'), "Score type specified must be one of 'mse', 'accuracy', 'r2', 'adj_r2', or 'roc'")
+  expect_warning(score("rf",'goodbye'), "goodbye is currently not a supported score type.")
 })
 
 test_that("score() using mse returns a double"{
@@ -31,6 +31,7 @@ test_that("score() using mse returns a double"{
 
 
 test_that("score() using MSE on a random forest is working correctly"{
+  # This covers case A in the score function
   is_setosa <- function(x){
     if(x == "setosa"){
       return(1)
@@ -50,5 +51,9 @@ test_that("score() using MSE on a random forest is working correctly"{
   expect_equal(score("rf","mse")(x,y), sum(((as.numeric(y_pred) - 1) - y)^2))
 })
 
+test_that("score() correctly returns an error when an unsupported score_type is passed"{
+  # This covers case B in the score function
+  expect_error(score('rf', 'banana'))
 
+})
 
