@@ -30,6 +30,8 @@ user to choose different scoring functions based on the problem at hand.
 
 # Usage
 
+### regularization_plot()
+
 The functions are straightforward to use. Appropriate sample data can be generated with,
 
 ```
@@ -42,6 +44,8 @@ The magnitude of coefficients after L2-regularized regression can be viewed with
 ```
 regularization_plot("ridge", lambda=2, x=X, y=Y)
 ```
+
+### Score()
 
 For the `Score()` function, we'll use the `iris` dataset, and predict whether or not a given flower is of the `setosa` variety.
 
@@ -67,6 +71,22 @@ Then, we call the `score()` function, providing it with the `caret` model we wou
 score('rf', 'accuracy')(x, y)
 ```
 
+### train_test_plot()
+
+To produce a plot that visualizes the training and test error when iterating over the hyperparameter "cp" of a decision tree model we can follow these steps:
+
+** 1. Load data. Using Sonar data set as example **
+
+```
+data(Sonar)
+```
+
+** 2. Create plot using 'train_test_plot*()'**
+```
+train_test_plot(model = "decision_tree", score_type = "accuracy", x = Sonar[,1:60],
+                y = Sonar[,61], hyperparameter = "cp", param_range = seq(0,1,.05), random_seed= 123)
+
+```
 
 
 See the vignette [here](https://github.com/UBC-MDS/ezmodelR/blob/master/vignettes/ezmodelR.Rmd) for a more detailed outline of usage.
