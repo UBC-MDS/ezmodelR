@@ -12,7 +12,7 @@
 
 <meta name="author" content="Tyler Roberts, Alex Kleefeldt, Sean Conley" />
 
-<meta name="date" content="2018-03-11" />
+<meta name="date" content="2018-03-16" />
 
 <title>Introduction to ezmodelR</title>
 
@@ -32,7 +32,7 @@
 
 <h1 class="title toc-ignore">Introduction to ezmodelR</h1>
 <h4 class="author"><em>Tyler Roberts, Alex Kleefeldt, Sean Conley</em></h4>
-<h4 class="date"><em>2018-03-11</em></h4>
+<h4 class="date"><em>2018-03-16</em></h4>
 
 
 
@@ -71,6 +71,26 @@
 <pre><code>train_test_plot(model = &quot;decision_tree&quot;, score_type = &quot;accuracy&quot;, x = Y,
                                               y = Y, hyperparameter = &quot;cp&quot;, param_range = range(...), random_seed= ...)</code></pre>
 <p>The function will return a <code>ggplot2</code> plot of the object, which is convenient as the data plotted (e.g. coefficient values) can then be extracted from it.</p>
+</div>
+<div id="calculating-scores." class="section level3">
+<h3>Calculating Scores.</h3>
+<p>The <code>score()</code> function allows the user to compute various scoring metrics for a specified model trained in <code>caret</code>. Currently, the following metrics are supported:</p>
+<ul>
+<li>Mean Squared Error: <code>score_type=mse</code></li>
+<li>Accuracy: <code>score_type=accuracy</code></li>
+<li>Specificity: <code>score_type=specificity</code></li>
+<li>Sensitivity <code>score_type=sensitivity</code></li>
+<li>Coefficient of Determination: <code>score_type=r2</code></li>
+<li>Adjusted R2: <code>score_type=adj_r2</code></li>
+</ul>
+<p>This function takes in arguments specifying the type of caret model to train, the score type to return a function for, and global settings for the caret model to be trained.</p>
+<p>It then returns a function that takes two arguments: features: <code>x</code> and response <code>y</code>. Calling this function will return the score, as a double, for the previously provided model, and the data provided to this function. <code>x</code> and <code>y</code> must both be <strong>dataframes</strong></p>
+<p>Here is an example of how to call <code>score()</code> in order to get a function for sensitivity for a random forest model:</p>
+<pre><code>rf_score &lt;- score('rf', 'sensitivity')</code></pre>
+<p>The above code block will return a function that will compute the sensitivity for a random forest trained on the data you provide it.</p>
+<p>If you don’t want a function back, or only have one set of data you are testing score on; you could simply provide the x and y data in the original function call as follows:</p>
+<pre><code>rf_score &lt;- score('rf', 'sensitivity')(x, y)</code></pre>
+<p>This second code block will return a double.</p>
 </div>
 </div>
 
