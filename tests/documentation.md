@@ -23,3 +23,13 @@
 |D|Test A|
 |E|Test D|
 |F|Test E|
+
+### `train_test_plot`
+
+|Statement|Corresponding Test|
+|-|-|
+
+|A|`test_that("score() using MSE on a random forest is working correctly")`|
+|B|`test_that("score() correctly returns an error when an unsupported score_type is passed")`|
+|Checking returns|`test_that("Score returns a function")`|
+|Checking returns|`test_that("score() using mse returns a double")`|
