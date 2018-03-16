@@ -1,5 +1,6 @@
 library(dplyr)
 library(caret)
+library(ezmodelR)
 
 test_that("score() returns a function" {
   expect_type(score("rf", "mse"), "closure")
