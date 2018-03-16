@@ -7,6 +7,7 @@ library(rpart)
 library(mlbench)
 data(Sonar)
 
+
 #Tests:
 
 #Test A
@@ -60,31 +61,34 @@ test_that("Passing model, score_type, and hyperparameter leads to correct plot",
 
 #Test B
 
+
 test_that("random_seed is numeric", {
-  expect_warning(test_train_plot(model = "decision_tree" , score_type = "accuracy", x = Sonar[,1:60],
-                                 y = Sonar[,61], hyperparameter = "cp",param_range = seq(0,1,.05), random_seed= NA), "random_seed needs to be numeric.")
+  expect_error(train_test_plot(model = "decision_tree" , score_type = "accuracy", x = Sonar[,1:60],
+                               y = Sonar[,61], hyperparameter = "cp",param_range = seq(0,1,.05), random_seed= NA), "random_seed needs to be numeric.")
 })
 
 
 #Test C
 test_that("Function returns error when unexpected model is specified", {
-  expect_warning(test_train_plot(model = "ridge" , score_type = "accuracy", x = Sonar[,1:60],
-                                 y = Sonar[,61], hyperparameter = "cp", random_seed= 123), "'lasso', 'ridge', and 'logistic' regression are not implemented yet. Please, choose model = 'decision tree'")
+  expect_error(train_test_plot(model = "ridge" , score_type = "accuracy", x = Sonar[,1:60],
+                               y = Sonar[,61], hyperparameter = "cp", random_seed= 123), "'lasso', 'ridge', and 'logistic' regression are not implemented yet. Please, choose model = 'decision_tree'")
 })
 
 
 #Test D
 test_that("Function returns error when unexpected score is specified", {
-  expect_warning(test_train_plot(model = "decision_tree" , score_type = NA, x = Sonar[,1:60],
-                                 y = Sonar[,61], hyperparameter = "cp",param_range = seq(0,1,.05), random_seed= 123), "score_type for decision_tree needs to be 'accuracy'")
+  expect_error(train_test_plot(model = "decision_tree" , score_type = "something", x = Sonar[,1:60],
+                               y = Sonar[,61], hyperparameter = "cp",param_range = seq(0,1,.05), random_seed= 123), "score_type for decision_tree needs to be 'accuracy'")
 })
 
 
 #Test E
 test_that("Function returns error when unexpected hyperparameter is specified", {
-  expect_warning(test_train_plot(model = "decision_tree" , score_type = "accuracy", x = Sonar[,1:60],
-                                 y = Sonar[,61], hyperparameter = NA,param_range = seq(0,1,.05), random_seed= 123), "The hyperparameter for a decision_tree has to be 'cp'")
+  expect_error(train_test_plot(model = "decision_tree" , score_type = "accuracy", x = Sonar[,1:60],
+                               y = Sonar[,61], hyperparameter = "something",param_range = seq(0,1,.05), random_seed= 123), "The hyperparameter for a decision_tree has to be 'cp'")
 })
+
+
 
 
 

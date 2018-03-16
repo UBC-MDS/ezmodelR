@@ -39,6 +39,12 @@ train_test_plot <- function(model, score_type, x, y, hyperparameter, param_range
     stop("random_seed needs to be numeric.")
   }
 
+  #Condition: C
+  if (!(model == "decision_tree")){
+    stop("'lasso', 'ridge', and 'logistic' regression are not implemented yet. Please, choose model = 'decision_tree'")
+  }
+
+
 
   dat <- cbind(x,y)
 
@@ -51,10 +57,6 @@ train_test_plot <- function(model, score_type, x, y, hyperparameter, param_range
   test_acc_list <- c()
   index_list <- c()
 
-  #Condition: C
-  if (!(model == "decision_tree")){
-    stop("'lasso', 'ridge', and 'logistic' regression are not implemented yet. Please, choose model = 'decision_tree'")
-  }
 
   #Condition: D
   if (model == "decision_tree"){
@@ -100,7 +102,6 @@ train_test_plot <- function(model, score_type, x, y, hyperparameter, param_range
 
   return(train_test_plot)
 }
-
 
 
 regularization_plot <- function(model, lambda, tol=1e-7, x, y){
