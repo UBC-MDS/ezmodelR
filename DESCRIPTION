@@ -13,7 +13,8 @@ Imports: ggplot2,
          dplyr,
          glue,
          rpart,
-         mlbench
+         mlbench,
+         randomForest
 Suggests: testthat,
     knitr,
     rmarkdown
