@@ -68,3 +68,36 @@ train_test_plot(model = "decision_tree", score_type = "accuracy", x = Y,
 ```
 
 The function will return a `ggplot2` plot of the object, which is convenient as the data plotted (e.g. coefficient values) can then be extracted from it.
+
+
+### Calculating Scores.
+
+The `score()` function allows the user to compute various scoring metrics for a specified  model trained in `caret`. Currently, the following metrics are supported:
+
+
+- Mean Squared Error: `score_type=mse`
+- Accuracy: `score_type=accuracy`
+- Specificity: `score_type=specificity`
+- Sensitivity `score_type=sensitivity`
+- Coefficient of Determination: `score_type=r2`
+- Adjusted R2: `score_type=adj_r2`
+
+
+This function takes in arguments specifying the type of caret model to train, the score type to return a function for, and global settings for the caret model to be trained.
+
+It then returns a function that takes two arguments: features: `x` and response `y`. Calling this function will return the score, as a double, for the previously provided model, and the data provided to this function. `x` and `y` must both be **dataframes**
+
+Here is an example of how to call `score()` in order to get a function for sensitivity for a random forest model:
+
+```
+rf_score <- score('rf', 'sensitivity')
+```
+The above code block will return a function that will compute the sensitivity for a random forest trained on the data you provide it.
+
+If you don't want a function back, or only have one set of data you are testing score on; you could simply provide the x and y data in the original function call as follows:
+
+```
+rf_score <- score('rf', 'sensitivity')(x, y)
+```
+
+This second code block will return a double.
