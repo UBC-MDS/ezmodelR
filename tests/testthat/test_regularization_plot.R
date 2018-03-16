@@ -1,4 +1,8 @@
 library(ezmodelR)
+library(ggplot2)
+library(caret)
+library(glmnet)
+library(dplyr)
 
 
 test_that("Function returns error when wrong type of model is specified", {

@@ -11,24 +11,24 @@ data(Sonar)
 
 train_test_plot <- function(model, score_type, x, y, hyperparameter, param_range, random_seed){
 
-  # Description:
-  #   Creates plot of training and test error for trained model.
-  #
-  # Args:
-  #   model:Currenntly only works with argument 'decision_tree'.
-  #         Generally:
-  #         String specifying decision_tree, lasso, ridge regression, or logistic regression.
-  #         Argument should be one of "decision_tree", "lasso", "ridge", or "logistic"..
-  #   score_type: (list or str): Should be one of (mse, r2, adj_r2, auc, ...).
-  #               If a vector, then a vector containing several of those entries as elements
-  #   x: n x d dataframe containing features
-  #   y: n x 1 dataframe containing response values.
-  #   hyperparameter: string defining hyperparameter to iterate over
-  #   param_range: vector of hyperparameter values to iterate over
-  #   random_seed: Default = None. If set to integer, defines the random train_test_split
-  #
-  # Returns:
-  #   ggplot object showing training and test score vs. hyperparameter values.
+  #' Creates plot of training and test error for trained model.
+  #'
+  #' @param model: Currently only works with argument 'decision_tree'.
+  #'         Generally:
+  #'         String specifying decision_tree, lasso, ridge regression, or logistic regression.
+  #'         Argument should be one of "decision_tree", "lasso", "ridge", or "logistic"..
+  #' @param score_type: (list or str): Should be one of (mse, r2, adj_r2, auc, ...).
+  #'               If a vector, then a vector containing several of those entries as elements
+  #' @param x: n x d dataframe containing features
+  #' @param y: n x 1 dataframe containing response values.
+  #' @param hyperparameter: string defining hyperparameter to iterate over
+  #' @param param_range: vector of hyperparameter values to iterate over
+  #' @param random_seed: Default = None. If set to integer, defines the random train_test_split
+  #' @return ggplot object showing training and test score vs. hyperparameter values.
+  #' @examples
+  #' train_test_plot(model = "decision_tree", score_type = "accuracy", x = Y,
+  #`                 y = Y, hyperparameter = "cp", param_range = range(...), random_seed= ...)
+  #'
 
   #Condition
 
@@ -104,25 +104,24 @@ train_test_plot <- function(model, score_type, x, y, hyperparameter, param_range
 
 
 regularization_plot <- function(model, lambda, tol=1e-7, x, y){
-  # Description:
-  #   Plots coefficients from regularizing various models.
-  #
-  # Args:
-  #   model: String specifying lasso, ridge regression, or logistic regression with L2-regularization.
-  #         Argument should be one of "lasso", "ridge", or "logistic".
-  #   lambda: Vector of penalty constant(s) multiplying the regularization term. Larger value corresponds to stronger regularization.
-  #   tol: Coefficients less than this will be treated as zero.
-  #   x:  n x d dataframe of features.
-  #   y: n x 1 dataframe of response values.
-  #
-  #
-  # Returns:
-  #   ggplot object. Plot returned depends on length of lambda.
-  #     length(lambda)==1: Plot displays magnitude of model coefficients, where coefficients with magnitude less than
-  #                        `tol` are treated as zero.
-  #     length(lambda)>1: Plot displays counts of nonzero coefficients in each model, where coefficients with magnitude
-  #                       less than `tol` are treated as zero.
-  #
+  #' Plots coefficients from regularizing various models.
+  #'
+  #' @param model: String specifying lasso, ridge regression, or logistic regression with L2-regularization.
+  #'         Argument should be one of "lasso", "ridge", or "logistic".
+  #' @param lambda: Vector of penalty constant(s) multiplying the regularization term. Larger value corresponds to stronger regularization.
+  #' @param  tol: Coefficients less than this will be treated as zero.
+  #' @param  x:  n x d dataframe of features.
+  #' @param  y: n x 1 dataframe of response values.
+  #'
+  #' @return ggplot object. Plot returned depends on length of lambda.
+  #'     length(lambda)==1: Plot displays magnitude of model coefficients, where coefficients with magnitude less than
+  #'                        `tol` are treated as zero.
+  #'     length(lambda)>1: Plot displays counts of nonzero coefficients in each model, where coefficients with magnitude
+  #'                       less than `tol` are treated as zero.
+  #'
+  #' @examples
+  #' regularization_plot('ridge', lambda=2^c(1,0,1), x=X, y=Y)
+  #' regularization_plot('lasso, lambda=2, x=X, y=Y)
 
   #True, A, False: B
   if (!(model %in% c('ridge', 'lasso', 'logistic'))) {
@@ -193,16 +192,16 @@ regularization_plot <- function(model, lambda, tol=1e-7, x, y){
 
 
 score <- function(model, score_type, train_settings=trainControl(method='none')) {
-  # Description:
-  #   Used to compute an arbitrary score method on arbitrary inputs.
-  #
-  # Args:
-  #   model (char): Model type that can be passed into caret's `train()` function.
-  #   score_type (char): String specifying score method to be used. Should be one of (mse, accuracy, r2, adj_r2, auc, ...).
-  #   train_settings (list): default=trainControl(method='none'). trainControl object containing any desired settings for caret's                                    train() function.
-  #
-  # Returns:
-  #   Function that takes dataframes X (features, n x d) and Y (response, n x 1) that score will be computed on.
+  #' Used to compute an arbitrary score method on arbitrary inputs.
+  #'
+  #' @param model (char): Model type that can be passed into caret's `train()` function.
+  #' @param score_type (char): String specifying score method to be used. Should be one of (mse, accuracy, r2, adj_r2, auc, ...).
+  #' @param train_settings (list): default=trainControl(method='none'). trainControl object containing any desired settings for caret's train() function.
+  #' @return Function that takes dataframes X (features, n x d) and Y (response, n x 1) that score will be computed on.
+  #'
+  #' @examples
+  #' rf_sens_func <- score('rf','sensitivity')
+  #' rf_sens_val <- score('rf', 'sensitivity')(x, y)
 
 
   mse <- function(x,y){
@@ -292,8 +291,6 @@ score <- function(model, score_type, train_settings=trainControl(method='none'))
   }
 
   adj_r2 <- function(x, y){
-
-    # Something not working here. Unsure what.
 
     n <- dim(x)[1]
     p <- dim(x)[2]

@@ -1,17 +1,11 @@
 library(dplyr)
 library(caret)
+library(ezmodelR)
 
 test_that("score() returns a function" {
   expect_type(score("rf", "mse"), "closure")
 })
 
-test_that("score() returns an error if a supported model type is not passed"{
-  expect_warning(score("hello",'mse'), "Model specified must be one supported by the 'caret' package")
-})
-
-test_that("score() returns an error if a supported score type is not passed"{
-  expect_warning(score("rf",'goodbye'), "goodbye is currently not a supported score type.")
-})
 
 test_that("score() using mse returns a double"{
   is_setosa <- function(x){
