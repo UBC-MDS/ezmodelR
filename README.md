@@ -43,6 +43,32 @@ The magnitude of coefficients after L2-regularized regression can be viewed with
 regularization_plot("ridge", lambda=2, x=X, y=Y)
 ```
 
+For the `Score()` function, we'll use the `iris` dataset, and predict whether or not a given flower is of the `setosa` variety.
+
+First we need to select the right data, and transform the output to represent "is setosa".
+```
+is_setosa <- function(x){
+  if(x == "setosa"){
+    return(1)
+  }
+  else{
+    return(0)
+  }
+}
+
+y <-  apply(iris['Species'], 1, is_setosa)
+sum(y)
+x <- iris %>% select("Sepal.Width")
+```
+
+Then, we call the `score()` function, providing it with the `caret` model we would like to train, and pass `x` and `y` to the output.
+
+```
+score('rf', 'accuracy')(x, y)
+```
+
+
+
 See the vignette [here](https://github.com/UBC-MDS/ezmodelR/blob/master/vignettes/ezmodelR.Rmd) for a more detailed outline of usage.
 
 # Installation
