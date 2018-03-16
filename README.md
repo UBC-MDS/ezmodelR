@@ -30,7 +30,20 @@ user to choose different scoring functions based on the problem at hand.
 
 # Usage
 
-See the vignette [here](https://github.com/UBC-MDS/ezmodelR/blob/master/vignettes/ezmodelR.Rmd) for a basic outline of usage.
+The functions are straightforward to use. Appropriate sample data can be generated with,
+
+```
+X <- mtcars[-1]
+Y <- data.frame(mtcars$mpg)
+```
+
+The magnitude of coefficients after L2-regularized regression can be viewed with,
+
+```
+regularization_plot("ridge", lambda=2, x=X, y=Y)
+```
+
+See the vignette [here](https://github.com/UBC-MDS/ezmodelR/blob/master/vignettes/ezmodelR.Rmd) for a more detailed outline of usage.
 
 # Installation
 
