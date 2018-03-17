@@ -29,6 +29,9 @@ ggplot object. Plot returned depends on length of lambda.
 Plots coefficients from regularizing various models.
 }
 \examples{
+X <- mtcars[-1]
+Y <- data.frame(mtcars$mpg)
+
 regularization_plot('ridge', lambda=2^c(1,0,1), x=X, y=Y)
 regularization_plot('lasso', lambda=2, x=X, y=Y)
 }
