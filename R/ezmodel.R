@@ -122,7 +122,7 @@ regularization_plot <- function(model, lambda, tol=1e-7, x, y){
   #'
   #' @examples
   #' regularization_plot('ridge', lambda=2^c(1,0,1), x=X, y=Y)
-  #' regularization_plot('lasso, lambda=2, x=X, y=Y)
+  #' regularization_plot('lasso', lambda=2, x=X, y=Y)
 
   #True, A, False: B
   if (!(model %in% c('ridge', 'lasso', 'logistic'))) {
