@@ -207,6 +207,10 @@ score <- function(model, score_type, train_settings=trainControl(method='none'))
   #' @param train_settings (list): default=trainControl(method='none'). trainControl object containing any desired settings for caret's train() function.
   #' @return Function that takes dataframes X (features, n x d) and Y (response, n x 1) that score will be computed on.
   #'
+  #' @import dplyr
+  #' @import caret
+  #' @export
+  #'
   #' @examples
   #' rf_sens_func <- score('rf','sensitivity')
   #' rf_sens_val <- score('rf', 'sensitivity')(x, y)
@@ -217,7 +221,7 @@ score <- function(model, score_type, train_settings=trainControl(method='none'))
     ) # Note the as.numeric(as.factor()) magic, Currently only suports Classification
     y_pred <- predict(model)
 
-    score <- sum(((as.numeric(y_pred) - as.numeric(as.factor(y))^2)))
+    score <- sum(((as.numeric(y_pred) - as.numeric(as.factor(y)))^2))
     return (score)
   }
 
