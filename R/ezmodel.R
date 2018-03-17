@@ -119,8 +119,15 @@ regularization_plot <- function(model, lambda, tol=1e-7, x, y){
   #'                        `tol` are treated as zero.
   #'     length(lambda)>1: Plot displays counts of nonzero coefficients in each model, where coefficients with magnitude
   #'                       less than `tol` are treated as zero.
+  #' @import dplyr
+  #' @import caret
+  #' @import ggplot2
+  #' @export
   #'
   #' @examples
+  #' X <- mtcars[-1]
+  #' Y <- data.frame(mtcars$mpg)
+  #'
   #' regularization_plot('ridge', lambda=2^c(1,0,1), x=X, y=Y)
   #' regularization_plot('lasso', lambda=2, x=X, y=Y)
 
