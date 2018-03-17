@@ -41,7 +41,7 @@ test_that("score() using MSE on a random forest is working correctly", {
   settings <- trainControl(method='none')
   rf_model <- train(x, as.factor(y), method='rf', trControl = settings)
 
-  y_pred <- predict(test)
+  y_pred <- predict(rf_model)
   expect_equal(score("rf","mse")(x,y), sum(((as.numeric(y_pred) - 1) - y)^2))
 })
 

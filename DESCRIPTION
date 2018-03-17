@@ -14,7 +14,8 @@ Imports: ggplot2,
          glue,
          rpart,
          mlbench,
-         randomForest
+         randomForest,
+         e1071
 Suggests: testthat,
     knitr,
     rmarkdown
