@@ -20,15 +20,5 @@ Function that takes dataframes X (features, n x d) and Y (response, n x 1) that 
 Used to compute an arbitrary score method on arbitrary inputs.
 }
 \examples{
-is_setosa <- function(x){
-    if(x == "setosa"){
-         return(1)
-      }
-         return(0)
-  }
-y <-  apply(iris['Species'], 1, is_setosa)
-x <- iris \%>\% select("Sepal.Width")
-
 rf_sens_func <- score('rf','sensitivity')
-rf_sens_val <- score('rf', 'sensitivity')(x, y)
 }
