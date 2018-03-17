@@ -51,3 +51,20 @@ test_that("score() correctly returns an error when an unsupported score_type is 
 
 })
 
+
+test_that("score() correctly returns an error when an unsupported model is passed", {
+  is_setosa <- function(x){
+    if(x == "setosa"){
+      return(1)
+    }
+    else{
+      return(0)
+    }
+  }
+
+  y <-  apply(iris['Species'], 1, is_setosa)
+  x <- iris %>% select("Sepal.Width")
+
+  expect_error(score('banana', "mse")(x,y))
+
+})
