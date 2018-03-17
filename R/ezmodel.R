@@ -212,19 +212,7 @@ score <- function(model, score_type, train_settings=trainControl(method='none'))
   #' @export
   #'
   #' @examples
-  #' is_setosa <- function(x){
-  #'     if(x == "setosa"){
-  #'          return(1)
-  #'       }
-  #"       else{
-  #'          return(0)
-  #"      }
-  #'   }
-  #' y <-  apply(iris['Species'], 1, is_setosa)
-  #' x <- iris %>% select("Sepal.Width")
-  #'
   #' rf_sens_func <- score('rf','sensitivity')
-  #' rf_sens_val <- score('rf', 'sensitivity')(x, y)
 
 
   mse <- function(x,y){
