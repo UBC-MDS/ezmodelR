@@ -21,5 +21,4 @@ Used to compute an arbitrary score method on arbitrary inputs.
 }
 \examples{
 rf_sens_func <- score('rf','sensitivity')
-rf_sens_val <- score('rf', 'sensitivity')(x, y)
 }
