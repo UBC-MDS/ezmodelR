@@ -26,8 +26,10 @@ train_test_plot <- function(model, score_type, x, y, hyperparameter, param_range
   #' @param random_seed: Default = None. If set to integer, defines the random train_test_split
   #' @return ggplot object showing training and test score vs. hyperparameter values.
   #' @examples
-  #' train_test_plot(model = "decision_tree", score_type = "accuracy", x = Y,
-  #`                 y = Y, hyperparameter = "cp", param_range = range(...), random_seed= ...)
+  #' X <- mtcars[-1]
+  #' Y <- data.frame(mtcars$mpg)
+  #' train_test_plot(model = "decision_tree", score_type = "accuracy", x = X,
+  #`                 y = Y, hyperparameter = "cp", param_range = c(0.1,0.2,0.3), random_seed=123)
   #'
 
   #Condition
