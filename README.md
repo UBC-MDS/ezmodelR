@@ -1,4 +1,4 @@
-# ezmodel/ezmodelR
+# ezmodelR
 
 [![Build Status](https://travis-ci.org/UBC-MDS/ezmodelR.svg?branch=master)](https://travis-ci.org/UBC-MDS/ezmodelR)
 
@@ -106,3 +106,5 @@ There exists a limited ability to complete all of these tasks within both `sklea
 extracted data (e.g. coefficients, predictions, etc.), or only offer limited diagnostics (e.g. unadjusted R^2 scores). Users of these packages frequently find
 themselves repeating the same workflow, for example, splitting the dataset, training the model, and plotting training/validation error. This package will
 streamline this process.
+
+[Here](https://github.com/UBC-MDS/ezmodel/) is a link to the Python version of this package. It implements similar tools using scikit-learn to train models.
