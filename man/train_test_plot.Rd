@@ -33,6 +33,11 @@ ggplot object showing training and test score vs. hyperparameter values.
 Creates plot of training and test error for trained model.
 }
 \examples{
-train_test_plot(model = "decision_tree", score_type = "accuracy", x = Y,
+\dontrun{data('Sonar')}
+\dontrun{X <- Sonar[,1:60]}
+\dontrun{Y <- Sonar[,61]}
+
+\dontrun{train_test_plot(model = "decision_tree", score_type = "accuracy", x = X,
+  y = Y, hyperparameter = "cp", param_range = c(0.1,0.2,0.3), random_seed=123)}
 
 }

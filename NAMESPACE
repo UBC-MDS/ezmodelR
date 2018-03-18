@@ -2,6 +2,7 @@
 
 export(regularization_plot)
 export(score)
+export(train_test_plot)
 import(caret)
 import(dplyr)
 import(ggplot2)
